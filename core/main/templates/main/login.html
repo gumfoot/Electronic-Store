@@ -1,0 +1,46 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login</title>
+  <link rel="stylesheet" type="text/css" href="{% static 'css/login.css' %}">
+</head>
+<body>
+
+<form method="POST">
+    {% csrf_token %}
+    <p>
+        <input type="text" name="username" placeholder="Enter Username" id="">
+    </p>
+    <p>
+        <input type="password" name="password" placeholder="Enter Password" id="">
+    </p>
+
+    <div class="input_box">
+        <div class="password_title">
+          <a href="{% url 'password_reset' %}">Forgot Password?</a>
+        </div>
+    </div>
+
+    <p class="sign_up">Don't have an account? <a href="{%url 'register' %}">Sign up</a></p>
+
+    <button class="btn btn-primary" type="submit">Login<a href="{% url 'login'%}"></a></button>
+    <p class="back_to_products"><button>Back To Products <a href="{% url 'index'%}"></a></button></p>
+    
+</form>
+
+{% load socialaccount %}
+<h2>Google Login</h2>
+<a href="{% provider_login_url 'google' %}?next=/">Login With Google</a>
+
+{% if user.is_authenticated %}
+<p>You are signed in as {{ user.email }}</p>
+<a href="{% url 'logout' %}">Log Out</a>
+<a href="{% url 'index' %}">Back to Products</a>
+{% endif %}
+
+</body>
+</html>
