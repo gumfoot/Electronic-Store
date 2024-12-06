@@ -179,9 +179,10 @@ class CookieStatusView(View):
 #----------------------------------------------------------------------------------------------------------------------------------------------
 
 def checkout(request):
-    items = request.session.get('cart_items', [])
-    total_quantity = sum(item['quantity'] for item in items)
-    total_sum = sum(item['quantity'] * item['price'] for item in items)
+    cart_items = Cart.objects.filter(user=request.user)
+    total_quantity = sum(item.quantity for item in cart_items)
+    total_sum = sum(item.quantity * (item.product.new_price if item.product else item.accessory.new_price) for item in cart_items)
+    
     if request.method == 'POST':
         form = ContactForm(request.POST)
         if form.is_valid():
@@ -189,11 +190,12 @@ def checkout(request):
             return redirect('index')
     else:
         form = ContactForm()
+        
     context = {
         'form': form,
         'total_quantity': total_quantity,
         'total_sum': total_sum,
-        'items': items
+        'items': cart_items,
     }
 
     return render(request, 'main/checkout.html', context=context)
@@ -223,27 +225,31 @@ def product(request):
 def store(request):
     images = Store_img.objects.all()
     search_query = request.GET.get('search', '')
-    category_id = request.GET.get('category', '')
+    category_id = request.GET.get('category')  # Get category from URL params
+    product_name = request.GET.get('product_name', '')
+
 
     products = Product.objects.all().prefetch_related()
 
     if search_query:
         products = products.filter(pr_name__icontains=search_query)
     
-    if category_id:
+    if category_id:  # Filter by category if provided
         products = products.filter(category_id=category_id)
+
+    if product_name:  
+        products = products.filter(pr_name__icontains=product_name)
+
     
     # Pagination
-    paginator = Paginator(products, 9)  # Show 9 products per page
+    paginator = Paginator(products, 9)
     page = request.GET.get('page')
     
     try:
         products = paginator.page(page)
     except PageNotAnInteger:
-        # If page is not an integer, deliver first page.
         products = paginator.page(1)
     except EmptyPage:
-        # If page is out of range (e.g. 9999), deliver last page of results.
         products = paginator.page(paginator.num_pages)
     
     categories = Category.objects.all()
@@ -253,7 +259,9 @@ def store(request):
         'products': products,
         'categories': categories,
         'search_query': search_query,
-        'category_id': category_id,
+        'category_id': category_id,  # Pass category_id to template
+        'product_name': product_name,
+        'total_products': products.count,
         'images': images,
     }
     return render(request, 'main/store.html', context)
@@ -331,9 +339,12 @@ def product_detail(request, product_id):
     product = get_object_or_404(Product, pk=product_id)
     product_details = Product_detail.objects.filter(product=product)
     top_selling = TopSelling.objects.filter(product=product)
-    wishlist = Wishlist.objects.filter(product=product, user=request.user)
+    
     pictures = Product_images.objects.filter(product=product)
     description = Product_description.objects.filter(product=product).first()
+    wishlist = None
+    if request.user.is_authenticated:
+        wishlist = Wishlist.objects.filter(product=product, user=request.user)
     if request.method == 'POST':
         form = ProductImageForm(request.POST, request.FILES)
         if form.is_valid():
@@ -597,6 +608,11 @@ def login_request(request):
                     login(request, user)
                     messages.info(request, f"You are now logged in as {username}.")
                     return redirect("index")
+                    
+                    next_url = request.POST.get('next') or request.GET.get('next')
+                    if next_url:
+                        return redirect(next_url)
+                    return redirect('index')
                 else:
                     messages.error(request, "Invalid username or password.")
             except PyJWTError:
@@ -606,6 +622,10 @@ def login_request(request):
             messages.error(request, "Invalid username or password.")
     else:
         form = AuthenticationForm()
+    context = {
+        "login_form": form,
+        "next": request.GET.get('next', '')
+    }
     return render(request=request, template_name="main/login.html", context={"login_form": form})
 def logout_request(request):
     logout(request)
@@ -617,6 +637,7 @@ def pay(request):
     summ = 0
     cart_items = Cart.objects.filter(user=request.user)
     for item in cart_items:
+        print("price:{item.product.new_price}")
         quantity += item.quantity
         summ += item.product.new_price * item.quantity
     if request.method == 'POST':
@@ -655,19 +676,19 @@ def user_details(request):
         form = UserMessageForm()
     return render(request, 'main/address_after_payment.html', context={'form': form})
 
-def all_accessories(request):
-    try:
-        accessories_category = Category.objects.get(category_name='Accessories')
-        # Fetch products related to the 'Accessories' category
-        accessories = Product.objects.filter(category=accessories_category)
-    except Category.DoesNotExist:
-        accessories = Product.objects.none()
+# def all_accessories(request):
+#     try:
+#         accessories_category = Category.objects.get(category_name='Accessories')
+#         # Fetch products related to the 'Accessories' category
+#         accessories = Product.objects.filter(category=accessories_category)
+#     except Category.DoesNotExist:
+#         accessories = Product.objects.none()
     
-    context = {
-        'accessories': accessories
-    }
+#     context = {
+#         'accessories': accessories
+#     }
 
-    return render(request, 'main/all_accessories.html', context)
+#     return render(request, 'main/all_accessories.html', context)
 
 @login_required
 def accept_cookies(request):

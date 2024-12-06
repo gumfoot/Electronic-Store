@@ -8,7 +8,7 @@
 		<meta charset="utf-8">
 		<meta http-equiv="X-UA-Compatible" content="IE=edge">
 		<meta name="viewport" content="width=device-width, initial-scale=1">
-		<!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+		
 		
 		{% block title %}  {% endblock %}
 		
@@ -39,52 +39,22 @@
 
 </head>
 
-</head>
+
 <body>
 
 
-    
-  </div>
-    <nav>
-        <form action="{% url 'set_language' %}" method="post" class="language-form">{% csrf_token %}
-            <!-- <input name="next" type="hidden" value="{{ redirect_to }}"> -->
-			<!-- <select name="language" class="language-select"> -->
-                {% get_current_language as LANGUAGE_CODE %}
-				{% get_available_languages as LANGUAGES %}
-				{% get_language_info_list for LANGUAGES as languages %}
-				{% for language in languages %}
-            </option>
-            {% endfor %}
-        </select>
-    </form>
-</nav>
+
 <!-- HEADER -->
 <header>
     <div id="top-header">
         <div class="container">
+
             <ul class="header-links pull-left">
-                <li><a href="#"><i class="fa fa-phone"></i> +021-95-51-84</a></li>
-                <li><a href="#"><i class="fa fa-envelope-o"></i> email@email.com</a></li>
-                <li><a href="#"><i class="fa fa-map-marker"></i> 1734 Stonecoal Road</a></li>
-                <nav>
-                    <form action="{% url 'set_language' %}" method="post" class="language-form">{% csrf_token %}
-                        <input name="next" type="hidden" value="{{ redirect_to }}">
-                        <select name="language" class="language-select">
-                            {% get_current_language as LANGUAGE_CODE %}
-                            {% get_available_languages as LANGUAGES %}
-                            {% get_language_info_list for LANGUAGES as languages %}
-                            {% for language in languages %}
-                                    <option value="{{ language.code }}" {% if language.code == LANGUAGE_CODE %}selected{% endif %}>
-                                        {{ language.name_local }} ({{ language.code }})
-                                    </option>
-                                {% endfor %}
-                            </select>
-                            <input type="submit" value="Go" class="language-submit">
-                        </form>
-                    </nav>
+                <div>
+                    logo
+                </div>
                 </ul>
                 <ul class="header-links pull-right">
-                    <li><a href="#"><i class="fa fa-dollar"></i> USD</a></li>
                     {% if user.is_authenticated %}
                     <li><a href="#"><i class="fa fa-user-o"></i> Welcome, {{ user.username }}</a></li>
                     <li><a href="{% url 'logout' %}">Logout</a></li>
@@ -100,13 +70,7 @@
         <div id="header">
             <div class="container">
                 <div class="row">
-                    <div class="col-md-3">
-                        <div class="header-logo">
-                            <a href="#" class="logo">
-                                <img src="./img/logo.png" alt="">
-                            </a>
-                        </div>
-                    </div>
+                   
                     <div class="col-md-6">
                         <div class="header-search">
                             <form method="GET" action="{% url 'store' %}">
@@ -137,7 +101,9 @@
                             </a>
                         </div>
                     </div>
-                    
+                </div>
+            </div>
+        </div>
         <!-- /MAIN HEADER -->
     </header>
     <!-- /HEADER -->
@@ -152,7 +118,6 @@
                     <li class="{% if request.path == '/store/' %}active{% endif %}"><a href="{% url 'store' %}">Store</a></li>
                     <!-- Add similar checks for other menu items -->
                     <li class="{% if request.path == '/checkout/' %}active{% endif %}"><a href="{% url 'checkout' %}">Checkout</a></li>
-                    <li class="{% if request.path == '/all_accessories/' %}active{% endif %}"><a href="{% url 'all_accessories' %}">Accessories</a></li>
                 </ul>
             </div>
         </div>
@@ -176,8 +141,8 @@
                         <button class="newsletter-btn"><i class="fa fa-envelope"></i> Subscribe</button>
                     </form>
                     <ul class="newsletter-follow">
-                        <li><a href="https://www.facebook.com/SmartCode.am/?locale=ru_RU"><i class="fa fa-facebook"></i></a></li>
-                        <li><a href="https://www.instagram.com/smartcode.am/"><i class="fa fa-instagram"></i></a></li>
+                        <li><a href="https://www.facebook.com/"><i class="fa fa-facebook"></i></a></li>
+                        <li><a href="https://www.instagram.com/"><i class="fa fa-instagram"></i></a></li>
                     </ul>
                 </div>
             </div>
@@ -197,9 +162,9 @@
                     <div class="footer">
                         <h3 class="footer-title">About Us</h3>
                         <ul class="footer-links">
-                            <li><a href="#"><i class="fa fa-map-marker"></i> 1734 Stonecoal Road</a></li>
-                            <li><a href="#"><i class="fa fa-phone"></i> +021-95-51-84</a></li>
-                            <li><a href="#"><i class="fa fa-envelope-o"></i> email@email.com</a></li>
+                            <li><a href="#"><i class="fa fa-map-marker"></i> 3891 Nairobi, Kenya</a></li>
+                            <li><a href="#"><i class="fa fa-phone"></i> +254-712-345-678</a></li>
+                            <li><a href="#"><i class="fa fa-envelope-o"></i> ohmsweetohm@gmail.com</a></li>
                         </ul>
                     </div>
                 </div>
@@ -207,11 +172,12 @@
                     <div class="footer">
                         <h3 class="footer-title">Categories</h3>
                         <ul class="footer-links">
-                            <li><a href="#">Hot deals</a></li>
-                            <li><a href="#">Laptops</a></li>
-                            <li><a href="#">Smartphones</a></li>
-                            <li><a href="#">Cameras</a></li>
-                            <li><a href="#">Accessories</a></li>
+                            <li><a href="{% url 'store' %}">All Products</a></li>
+                            {% for category in categories %}
+                                {% if category.id != 'all' %}
+                                    <li><a href="{% url 'store' %}?category={{ category.id }}">{{ category.category_name }}</a></li>
+                                {% endif %}
+                            {% endfor %}
                         </ul>
                     </div>
                 </div>
@@ -222,9 +188,7 @@
                         <ul class="footer-links">
                             <li><a href="#">About Us</a></li>
                             <li><a href="#">Contact Us</a></li>
-                            <li><a href="#">Privacy Policy</a></li>
-                            <li><a href="#">Orders and Returns</a></li>
-                            <li><a href="#">Terms & Conditions</a></li>
+                        
                         </ul>
                     </div>
                 </div>
@@ -232,30 +196,13 @@
                     <div class="footer">
                         <h3 class="footer-title">Service</h3>
                         <ul class="footer-links">
-                            <li><a href="#">My Account</a></li>
-                            <li><a href="#">View Cart</a></li>
-                            <li><a href="#">Wishlist</a></li>
-                            <li><a href="#">Track My Order</a></li>
-                            <li><a href="#">Help</a></li>
+                            <li><a href="http://127.0.0.1:8000/en/login/">My Account</a></li>
+                            <li><a href="http://127.0.0.1:8000/en/cart/">View Cart</a></li>
+                            <li><a href="http://127.0.0.1:8000/en/wishlist/">Wishlist</a></li>
+                            <li><a href="http://127.0.0.1:8000/en/register/">Register</a></li>
+                        
                         </ul>
                     </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    <div id="bottom-footer" class="section">
-        <div class="container">
-            <div class="row">
-                <div class="col-md-12 text-center">
-                    <ul class="footer-payments">
-                        <li><a href="{% url 'pay' %}"><i class="fa fa-cc-visa"></i></a></li>
-                        <li><a href="{% url 'pay' %}"><i class="fa fa-credit-card"></i></a></li>
-                        <li><a href="{% url 'pay' %}"><i class="fa fa-cc-paypal"></i></a></li>
-                        <li><a href="{% url 'pay' %}"><i class="fa fa-cc-mastercard"></i></a></li>
-                        <li><a href="{% url 'pay' %}"><i class="fa fa-cc-discover"></i></a></li>
-                        <li><a href="{% url 'pay' %}"><i class="fa fa-cc-amex"></i></a></li>
-                    </ul>
-                    
                 </div>
             </div>
         </div>
@@ -264,33 +211,6 @@
 </footer>
 <!-- /FOOTER -->
 
-    <!-- Chatbot toggler button -->
-    <button class="chatbot-toggler">
-        <span class="material-symbols-rounded">mode_comment</span>
-        <span class="material-symbols-outlined">close</span>
-    </button>
-<!-- Chatbot Popup -->
-<div class="chatbot">
-    <header>
-        <h2>Albertbot</h2>
-        <span class="close-btn material-symbols-outlined">close</span>
-    </header>
-    <ul class="chatbox">
-        <div class="chat-buttons">
-            <button class="chat-btn" data-question="greeting">Hi</button>
-            <button class="chat-btn" data-question="items">See Products</button>
-            <button class="chat-btn" data-question="payments">Payment Options</button>
-            <button class="chat-btn" data-question="delivery">Delivery Time</button>
-            <button class="chat-btn" data-question="thanks">Thanks</button>
-        </div>
-        <!-- Initial incoming message will be added dynamically -->
-    </ul>
-    <div class="chat-input">
-        <textarea id="user-input" placeholder="Enter a message..." spellcheck="false" required></textarea>
-        <span id="send-btn" class="material-symbols-rounded">send</span>
-    </div>
-    <!-- Buttons for predefined questions -->
-</div>
     <!-- jQuery Plugins -->
     
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>

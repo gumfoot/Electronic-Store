@@ -131,6 +131,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'main.context_processor.categories_processor',
             ],
         },
     },
@@ -205,7 +206,7 @@ AUTHENTICATION_BACKENDS = (
 )
 
 
-
+LOGIN_URL = 'login'
 LOGIN_REDIRECT_URL = '/'
 LOGOUT_REDIRECT_URL = '/'
 

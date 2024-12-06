@@ -26,11 +26,26 @@
     <div class="aside">
         <h3 class="aside-title">Product Name</h3>
         <div class="checkbox-filter">
-            <form id="product-name-filter-form">
-                <input type="text" id="productName" name="product_name" class="form-control" placeholder="Search by Product Name">
+            <form id="product-name-filter-form" method="GET" action="{% url 'store' %}">
+                {% if category_id %}
+                    <input type="hidden" name="category" value="{{ category_id }}">
+                {% endif %}
+                {% if search_query %}
+                    <input type="hidden" name="search" value="{{ search_query }}">
+                {% endif %}
+                
+                <input type="text" 
+                       id="productName" 
+                       name="product_name" 
+                       class="form-control" 
+                       placeholder="Search by Product Name"
+                       value="{{ product_name }}"> 
                 <button type="submit" class="btn btn-primary">Apply</button>
             </form>
         </div>
+        <p class="text-muted mt-2">
+            Found {{ total_products }} product{{ total_products|pluralize }} total
+        </p>
     </div>
 </div>
 <!-- /ASIDE -->
@@ -62,14 +77,8 @@
                     <div class="product-body">
                         <p class="product-category">{{ product.category.category_name }}</p>
                         <h3 class="product-name"><a href="{% url 'product_detail' product.id %}">{{ product.pr_name }}</a></h3>
-                        <h4 class="product-price">${{ product.new_price }} <del class="product-old-price">${{ product.old_price }}</del></h4>
-                        <div class="product-rating">
-                            <i class="fa fa-star"></i>
-                            <i class="fa fa-star"></i>
-                            <i class="fa fa-star"></i>
-                            <i class="fa fa-star"></i>
-                            <i class="fa fa-star"></i>
-                        </div>
+                        <h4 class="product-price">Ksh{{ product.new_price }} <del class="product-old-price">Ksh{{ product.old_price }}</del></h4>
+                        
                         <div class="product-btns">
                             <form method="post" action="{% url 'add_to_wishlist' product.id %}">
                                 {% csrf_token %}
@@ -104,24 +113,24 @@
     <span class="store-qty">Showing {{ products.paginator.per_page }} products per page</span>
     <ul class="store-pagination">
         {% if products.has_previous %}
-        <li><a href="?page=1{% if search_query %}&search={{ search_query }}{% endif %}{% if category_id %}&category={{ category_id }}{% endif %}">First</a></li>
-        <li><a href="?page={{ products.previous_page_number }}{% if search_query %}&search={{ search_query }}{% endif %}{% if category_id %}&category={{ category_id }}{% endif %}"><i class="fa fa-angle-left"></i></a></li>
+        <li><a href="?page=1{% if search_query %}&search={{ search_query }}{% endif %}{% if category_id %}&category={{ category_id }}{% endif %}{% if product_name %}&product_name={{ product_name }}{% endif %}">First</a></li>
+        <li><a href="?page={{ products.previous_page_number }}{% if search_query %}&search={{ search_query }}{% endif %}{% if category_id %}&category={{ category_id }}{% endif %}{% if product_name %}&product_name={{ product_name }}{% endif %}"><i class="fa fa-angle-left"></i></a></li>
         {% endif %}
-
+    
         {% for num in products.paginator.page_range %}
             {% if products.number == num %}
             <li class="active">{{ num }}</li>
             {% else %}
-            <li><a href="?page={{ num }}{% if search_query %}&search={{ search_query }}{% endif %}{% if category_id %}&category={{ category_id }}{% endif %}">{{ num }}</a></li>
+            <li><a href="?page={{ num }}{% if search_query %}&search={{ search_query }}{% endif %}{% if category_id %}&category={{ category_id }}{% endif %}{% if product_name %}&product_name={{ product_name }}{% endif %}">{{ num }}</a></li>
             {% endif %}
         {% endfor %}
-
+    
         {% if products.has_next %}
-        <li><a href="?page={{ products.next_page_number }}{% if search_query %}&search={{ search_query }}{% endif %}{% if category_id %}&category={{ category_id }}{% endif %}"><i class="fa fa-angle-right"></i></a></li>
-        <li><a href="?page={{ products.paginator.num_pages }}{% if search_query %}&search={{ search_query }}{% endif %}{% if category_id %}&category={{ category_id }}{% endif %}">Last</a></li>
-        {% endif %}
+        <li><a href="?page={{ products.next_page_number }}{% if search_query %}&search={{ search_query }}{% endif %}{% if category_id %}&category={{ category_id }}{% endif %}{% if product_name %}&product_name={{ product_name }}{% endif %}"><i class="fa fa-angle-right"></i></a></li>
+        <li><a href="?page={{ products.paginator.num_pages }}{% if search_query %}&search={{ search_query }}{% endif %}{% if category_id %}&category={{ category_id }}{% endif %}{% if product_name %}&product_name={{ product_name }}{% endif %}">Last</a></li>
+        {% endif %}
     </ul>
-</div>
+</div> 
 <!-- /store bottom filter -->
     </div>
 </div>

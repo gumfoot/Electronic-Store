@@ -5,36 +5,6 @@
 {% block content %}
 <!-- SECTION: Categories for Shop Section -->
 
-<!-- Cookie Consent Banner -->
-<div class="cookies-eu-banner">
-    <div class="cookie-text">
-        This site uses cookies to enhance user experience. See <a href="https://policies.google.com/privacy?hl=en-US" class="ml-1 text-decoration-none">Privacy policy</a>
-    </div>
-    <div class="button-container">
-        <button class="allow-button accept-btn" type="submit">Accept All</button>
-        <button class="allow-button" type="submit">Deny All</button>
-    </div>
-</div>
-
-<script>
-    const cookieBanner = document.querySelector('.cookies-eu-banner');
-    const acceptButton = document.querySelector('.accept-btn');
-    const denyButton = document.querySelector('.allow-button:not(.accept-btn)');
-
-    acceptButton.addEventListener('click', () => {
-        cookieBanner.style.display = 'none';
-        // Add code to set a cookie to remember the user's choice
-        // For example:
-        document.cookie = 'cookie_consent=accepted; expires=Fri, 31 Dec 9999 23:59:59 GMT; path=/';
-    });
-
-    denyButton.addEventListener('click', () => {
-        cookieBanner.style.display = 'none';
-        // Add code to set a cookie to remember the user's choice
-        // For example:
-        document.cookie = 'cookie_consent=denied; expires=Fri, 31 Dec 9999 23:59:59 GMT; path=/';
-    });
-</script>
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
@@ -61,12 +31,14 @@
                             </div>
                             <div class="shop-body">
                                 <h3>{{ category.category_name }}</h3>
-                                <a href="{% url 'store' %}" class="cta-btn">{% trans 'Shop now' %}<i class="fa fa-arrow-circle-right"></i></a>
+                                <a href="{% url 'store' %}?category={{ category.id }}" class="cta-btn">
+                                    {% trans 'Shop now' %}<i class="fa fa-arrow-circle-right"></i>
+                                </a>
                             </div>
                         </div>
                     </div>
-                {% endif %}
-            {% endfor %}
+                {% endif %}
+            {% endfor %}
         </div>
     </div>
 </div>
@@ -114,15 +86,9 @@
                                         </div>
                                         <div class="product-body">
                                             <p class="product-category">{{ product.category.category_name }}</p>
-                                            <h3 class="product-name"><a href="#">{{ product.pr_name }}</a></h3>
-                                            <h4 class="product-price">${{ product.new_price }} <del class="product-old-price">${{ product.old_price }}</del></h4>
-                                            <div class="product-rating">
-                                                <i class="fa fa-star"></i>
-                                                <i class="fa fa-star"></i>
-                                                <i class="fa fa-star"></i>
-                                                <i class="fa fa-star"></i>
-                                                <i class="fa fa-star"></i>
-                                            </div>
+                                            <h3 class="product-name"><a href="{% url 'product_detail' product.id %}">{{ product.pr_name }}</a></h3>
+                                            <h4 class="product-price">Ksh{{ product.new_price }} <del class="product-old-price">Ksh{{ product.old_price }}</del></h4>
+                                           
                                             <div class="product-btns">
                                                 <form method="post" action="{% url 'add_to_wishlist' product.id %}">
                                                     {% csrf_token %}
@@ -172,14 +138,8 @@
                                         <div class="product-body">
                                             <p class="product-category">{{ category.category_name }}</p>
                                             <h3 class="product-name"><a href="#">{{ product.pr_name }}</a></h3>
-                                            <h4 class="product-price">${{ product.new_price }} <del class="product-old-price">${{ product.old_price }}</del></h4>
-                                            <div class="product-rating">
-                                                <i class="fa fa-star"></i>
-                                                <i class="fa fa-star"></i>
-                                                <i class="fa fa-star"></i>
-                                                <i class="fa fa-star"></i>
-                                                <i class="fa fa-star"></i>
-                                            </div>
+                                            <h4 class="product-price">Ksh{{ product.new_price }} <del class="product-old-price">Ksh{{ product.old_price }}</del></h4>
+                                    
                                             <div class="product-btns">
                                                 <form method="post" action="{% url 'add_to_wishlist' product.id %}">
                                                     {% csrf_token %}
@@ -218,122 +178,6 @@
         </div>
     </div>
 </div>
-<!-- SECTION: New Products with Image-Sized Containers and Continuous Slider -->
-<div class="section">
-    <div class="container">
-        <div class="row">
-            <div class="col-md-12">
-                <div class="section-title">
-                    <h3 class="title">{% trans 'New Products' %}</h3>
-                </div>
-            </div>
-            <div class="col-md-12">
-                <div class="products-slick-horizontal" id="slick-new-products-horizontal">
-                    {% for product in products %}
-                    <div class="product-item">
-                        <a href="{% url 'product_detail' product.id %}" class="product-link">
-                            <img src="{{ product.pr_img.url }}" alt="{{ product.pr_name }}">
-                            <h3>{{ product.pr_name }}</h3>
-                        </a>
-                    </div>
-                    {% endfor %}
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-<!-- /SECTION: New Products with Image-Sized Containers and Continuous Slider -->
-<!-- /SECTION: New Products -->
-
-<!-- SECTION: Slideshow -->
-<div class="section">
-    <div class="container">
-        <div class="row">
-            <div class="col-md-12">
-                <div class="slideshow-container">
-                    {% for slide in slide %}
-                    <div class="slide">
-                        <img src="{{ slide.image.url }}" alt="{{ slide.alt_text }}" class="slide-image">
-                    </div>
-                    {% endfor %}
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-<!-- /SECTION: Slideshow -->
-
-<!-- HOT DEAL SECTION -->
-<div id="hot-deal" class="section">
-    <div class="container">
-        <div class="row">
-            <div class="col-md-12">
-                <div class="hot-deal">
-                    <ul id="countdown" class="hot-deal-countdown">
-                        <li>
-                            <div>
-                                <h3 id="days">00</h3>
-                                <span>{% trans 'Days' %}</span>
-                            </div>
-                        </li>
-                        <li>
-                            <div>
-                                <h3 id="hours">00</h3>
-                                <span>{% trans 'Hours' %}</span>
-                            </div>
-                        </li>
-                        <li>
-                            <div>
-                                <h3 id="minutes">00</h3>
-                                <span>{% trans 'Min' %}</span>
-                            </div>
-                        </li>
-                        <li>
-                            <div>
-                                <h3 id="seconds">00</h3>
-                                <span>{% trans 'Sec' %}</span>
-                            </div>
-                        </li>
-                    </ul>
-                    <h2 class="text-uppercase">{{ hot_deal.title }}</h2>
-                    <p>{{ hot_deal.description }}</p>
-                    <a class="primary-btn cta-btn" href="#">{% trans 'Shop now' %}</a>
-                </div>
-                    <script>
-                        // Set the date we're counting down to
-                        var countDownDate = new Date("Aug 22, 2024 15:37:25").getTime();
-                        // Update the count down every 1 second
-                        var x = setInterval(function() {
-                            // Get today's date and time
-                            var now = new Date().getTime();
-                            // Find the distance between now and the count down date
-                            var distance = countDownDate - now;
-                            // Time calculations for days, hours, minutes and seconds
-                            var days = Math.floor(distance / (1000 * 60 * 60 * 24));
-                            var hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-                            var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
-                            var seconds = Math.floor((distance % (1000 * 60)) / 1000);
-                            // Output the result in an element with id="demo"
-                            document.getElementById("days").innerHTML = days;
-                            document.getElementById("hours").innerHTML = hours;
-                            document.getElementById("minutes").innerHTML = minutes;
-                            document.getElementById("seconds").innerHTML = seconds;
-                            // If the count down is over, write some text
-                            if (distance < 0) {
-                                clearInterval(x);
-                                document.getElementById("days").innerHTML = "00";
-                                document.getElementById("hours").innerHTML = "00";
-                                document.getElementById("minutes").innerHTML = "00";
-                                document.getElementById("seconds").innerHTML = "00";
-                            }
-                        }, 1000);
-                    </script>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-<!-- /HOT DEAL SECTION -->
 
 <div class="section">
     <div class="container">
@@ -346,25 +190,17 @@
                 <!-- First Video -->
                 <div class="col-md-6">
                     <div class="video-item">
-                        <a href="{{ videos.0.video_url }}" target="_blank">
-                            <h4>{{ videos.0.video_title }}</h4>
-                        </a>
-                        <video width="640" height="480" controls autoplay muted>
-                            <source src="{{ videos.0.video_url }}" type="video/mp4">
-                            Your browser does not support the video tag.
-                        </video>
+                        <iframe width="560" height="315" src="https://www.youtube.com/embed/1BU4VXofbQk?si=SOgT9IbxnaZ5CLih" title="YouTube video player" frameborder="0" 
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
+                        referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
                     </div>
                 </div>
                 <!-- Second Video -->
                 <div class="col-md-6">
                     <div class="video-item">
-                        <a href="{{ videos.1.video_url }}" target="_blank">
-                            <h4>{{ videos.1.video_title }}</h4>
-                        </a>
-                        <video width="640" height="480" controls autoplay muted>
-                            <source src="{{ videos.1.video_url }}" type="video/mp4">
-                            Your browser does not support the video tag.
-                        </video>
+                        <iframe width="560" height="315" src="https://www.youtube.com/embed/2BZy3OJeAbs?si=oMTvUQoS-JDXL_zz" title="YouTube video player" 
+                        frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
+                        referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
                     </div>
                 </div>
             </div>
@@ -414,14 +250,8 @@
                                             <div class="product-body">
                                                 <p class="product-category">{{ product.category.category_name }}</p>
                                                 <h3 class="product-name"><a href="#">{{ product.pr_name }}</a></h3>
-                                                <h4 class="product-price">${{ product.new_price }} <del class="product-old-price">${{ product.old_price }}</del></h4>
-                                                <div class="product-rating">
-                                                    <i class="fa fa-star"></i>
-                                                    <i class="fa fa-star"></i>
-                                                    <i class="fa fa-star"></i>
-                                                    <i class="fa fa-star"></i>
-                                                    <i class="fa fa-star"></i>
-                                                </div>
+                                                <h4 class="product-price">Ksh{{ product.new_price }} <del class="product-old-price">Ksh{{ product.old_price }}</del></h4>
+                                                
                                                 <div class="product-btns">
                                                     <form method="post" action="{% url 'add_to_wishlist' product.id %}">
                                                         {% csrf_token %}
@@ -471,14 +301,8 @@
                                                     <div class="product-body">
                                                         <p class="product-category">{{ category.category_name }}</p>
                                                         <h3 class="product-name"><a href="#">{{ product.pr_name }}</a></h3>
-                                                        <h4 class="product-price">${{ product.new_price }} <del class="product-old-price">${{ product.old_price }}</del></h4>
-                                                        <div class="product-rating">
-                                                            <i class="fa fa-star"></i>
-                                                            <i class="fa fa-star"></i>
-                                                            <i class="fa fa-star"></i>
-                                                            <i class="fa fa-star"></i>
-                                                            <i class="fa fa-star"></i>
-                                                        </div>
+                                                        <h4 class="product-price">Ksh{{ product.new_price }} <del class="product-old-price">Ksh{{ product.old_price }}</del></h4>
+                                                    
                                                         <div class="product-btns">
                                                             <form method="post" action="{% url 'add_to_wishlist' product.id %}">
                                                                 {% csrf_token %}
@@ -517,31 +341,7 @@
         </div>
     </div>
 </div>
-<div class="section">
-    <div class="container">
-        <h3 class="title">{% trans 'Top Selling' %}</h3>
-        <div class="category-sliders-container">
-            {% for category in categories %}
-                {% if category.id != 'all' %}
-                <div class="category-slider" data-category="{{ category.id }}">
-                    <h4>{{ category.category_name }}</h4>
-                    <div class="products-slider slick-slider">
-                        {% for product in category.product_set.all %}
-                        <div class="product-item">
-                            <a href="{% url 'product_detail' product.id %}" class="product-link">
-                                <img src="{{ product.pr_img.url }}" alt="{{ product.pr_name }}">
-                                <h3>{{ product.pr_name }}</h3>
-                                <p>${{ product.new_price }}</p>
-                            </a>
-                        </div>
-                        {% endfor %}
-                    </div>
-                </div>
-                {% endif %}
-            {% endfor %}
-        </div>
-    </div>
-</div>
+
 <!-- /SECTION: Top Selling -->
 <div class="section">
     <div class="container">
@@ -554,25 +354,17 @@
                 <!-- Third Video -->
                 <div class="col-md-6">
                     <div class="video-item">
-                        <a href="{{ videos.2.video_url }}" target="_blank">
-                            <h4>{{ videos.2.video_title }}</h4>
-                        </a>
-                        <video controls autoplay muted>
-                            <source src="{{ videos.2.video_url }}" type="video/mp4">
-                            Your browser does not support the video tag.
-                        </video>
+                        <iframe width="560" height="315" src="https://www.youtube.com/embed/IHTT_7AjoU8?si=8NhLAFdki_8zYIzK" title="YouTube video player" 
+                        frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
+                        referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
                     </div>
                 </div>
                 <!-- Fourth Video -->
                 <div class="col-md-6">
                     <div class="video-item">
-                        <a href="{{ videos.3.video_url }}" target="_blank">
-                            <h4>{{ videos.3.video_title }}</h4>
-                        </a>
-                        <video controls autoplay muted>
-                            <source src="{{ videos.3.video_url }}" type="video/mp4">
-                            Your browser does not support the video tag.
-                        </video>
+                        <iframe width="560" height="315" src="https://www.youtube.com/embed/gvYNxcZQ3B4?si=3rAnKpdMRaYuE0PW" title="YouTube video player" 
+                        frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
+                        referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
                     </div>
                 </div>
             </div>

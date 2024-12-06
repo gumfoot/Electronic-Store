@@ -5,17 +5,17 @@ from .forms import ProductDetailAdminForm
 
 # admin.site.register(Category)
 # admin.site.register(Product)
-admin.site.register(Wishlist)
-admin.site.register(HotDeal)
+# admin.site.register(Wishlist)
+# admin.site.register(HotDeal)
 admin.site.register(Cart)
-admin.site.register(UserMessage)
-admin.site.register(Pay)
-admin.site.register(Store)
-admin.site.register(Store_img)
-admin.site.register(TopSelling)
-admin.site.register(Accessories)
-admin.site.register(Slide)
-admin.site.register(Video)
+# admin.site.register(UserMessage)
+# admin.site.register(Pay)
+# admin.site.register(Store)
+# admin.site.register(Store_img)
+# admin.site.register(TopSelling)
+# admin.site.register(Accessories)
+# admin.site.register(Slide)
+# admin.site.register(Video)
 
 
 

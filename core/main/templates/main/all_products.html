@@ -14,7 +14,7 @@
                         <div class="row">
                             <div class="col-md-12">
                                 <ul class="breadcrumb-tree">
-                                    <li><a href="{% url 'index' %}">{% trans 'Home' %}</a></li>
+                                    <li>{% trans 'Products' %}</li>
                                     <li class="active">{{ product.pr_name }}</li>
                                 </ul>
                             </div>
@@ -71,15 +71,8 @@
                             <div class="col-md-6">
                                 <div class="product-details">
                                     <h2 class="product-name">{{ product.pr_name }}</h2>
-                                    <div class="product-rating">
-                                        <i class="fa fa-star"></i>
-                                        <i class="fa fa-star"></i>
-                                        <i class="fa fa-star"></i>
-                                        <i class="fa fa-star"></i>
-                                        <i class="fa fa-star-o"></i>
-                                    </div>
                                     <div>
-                                        <h3 class="product-price">${{ product.new_price }}<del class="product-old-price">${{ product.old_price }}</del></h3>
+                                        <h3 class="product-price">Ksh{{ product.new_price }}<del class="product-old-price">Ksh{{ product.old_price }}</del></h3>
                                         <span class="product-available">{% trans 'In Stock' %}</span>
                                     </div>
                                     <div class="product-description">
@@ -95,11 +88,6 @@
                                         <li class="product-info-item">{{ product.category }}</li>
                                     </ul>
 
-                                    <div class="product-share">
-                                        <span>{% trans 'Share' %}:</span>
-                                        <a href="https://www.facebook.com/sharer/sharer.php?u={{ request.build_absolute_uri }}&amp;src=sdkpreparse" target="_blank"><i class="fa fa-facebook"></i></a>
-                                        <a href="https://t.me/share/url?url={{ request.build_absolute_uri }}&amp;text={{ product.pr_name }}" target="_blank"><i class="fa fa-telegram"></i></a>
-                                    </div>
                                 </div>
                             </div>
                         </div>
